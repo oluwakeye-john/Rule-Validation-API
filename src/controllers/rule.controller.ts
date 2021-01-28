@@ -33,12 +33,12 @@ const ruleController = () => {
       throw new BadRequestException(error, null);
     }
 
-    const isValid = validateField(body);
+    const { valid, message } = validateField(body);
 
-    if (isValid) {
+    if (valid) {
       const response = {
         status: RESPONSE_STATUS.SUCCESS,
-        message: `field ${body.data} successfully validated.`,
+        message,
         data: {
           error: false,
           field: body.rule.field,
@@ -49,12 +49,7 @@ const ruleController = () => {
       };
       res.status(200).json(formatToJSEND(response));
     } else {
-      const response = formatToJSEND({
-        status: RESPONSE_STATUS.ERROR,
-        message: `field ${body.rule.field} failed validation.`,
-        data: null,
-      });
-      res.status(200).json(formatToJSEND(response));
+      throw new BadRequestException(message, null);
     }
   };
 

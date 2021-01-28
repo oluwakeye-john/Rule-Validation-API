@@ -6,9 +6,14 @@ interface ResponseType {
   message: string;
 }
 
-export const formatToJSEND = ({ status, data, message }: ResponseType) => {
-  if (!message.endsWith(".")) {
-    message += ".";
+const checkPunctuation = (val: string): string => {
+  if (!val.endsWith(".")) {
+    val += ".";
   }
+  return val;
+};
+
+export const formatToJSEND = ({ status, data, message }: ResponseType) => {
+  message = checkPunctuation(message);
   return { message, status, data };
 };
