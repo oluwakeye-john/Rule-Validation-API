@@ -2,7 +2,7 @@ import { STATUS_CODE } from "./@types/general";
 
 class BaseError extends Error {
   private data: any;
-  constructor(message: string, data: Object) {
+  constructor(message: string, data: Object | null) {
     super();
     this.message = message;
     this.data = data;

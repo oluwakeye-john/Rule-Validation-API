@@ -1,6 +1,10 @@
-import { Request, Response } from "express";
+import { Request, response, Response } from "express";
 import { RESPONSE_STATUS, STATUS_CODE } from "../@types/general";
+import { BadRequestException } from "../error";
 import { formatToJSEND } from "../utils/formatToJSEND";
+import { ruleRequestValidation } from "../validation/payload.validation";
+import { ValidationPayload } from "../@types/rule";
+import { validateField } from "../validation/rule.validation";
 
 const me = {
   name: "Oluwakeye John",
@@ -22,11 +26,38 @@ const ruleController = () => {
   };
 
   const validateRule = (req: Request, res: Response) => {
-    console.log(req.body);
-    res.send("val");
+    const body: ValidationPayload = req.body;
+
+    const error = ruleRequestValidation(body);
+    if (error) {
+      throw new BadRequestException(error, null);
+    }
+
+    const isValid = validateField(body);
+
+    if (isValid) {
+      const response = {
+        status: RESPONSE_STATUS.SUCCESS,
+        message: `field ${body.data} successfully validated.`,
+        data: {
+          error: false,
+          field: body.rule.field,
+          field_value: body.data,
+          condition: body.rule.condition,
+          condition_value: body.rule.condition_value,
+        },
+      };
+      res.status(200).json(formatToJSEND(response));
+    } else {
+      const response = formatToJSEND({
+        status: RESPONSE_STATUS.ERROR,
+        message: `field ${body.rule.field} failed validation.`,
+        data: null,
+      });
+      res.status(200).json(formatToJSEND(response));
+    }
   };
 
   return { base, validateRule };
 };
-
 export default ruleController();

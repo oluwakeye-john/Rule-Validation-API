@@ -10,15 +10,13 @@ const handleErrors = (
 ) => {
   const code = err?.code;
 
-  return res
-    .status(code)
-    .json(
-      formatToJSEND({
-        status: RESPONSE_STATUS.ERROR,
-        message: err.message,
-        data: err.data,
-      })
-    );
+  return res.status(code).json(
+    formatToJSEND({
+      status: RESPONSE_STATUS.ERROR,
+      message: err.message,
+      data: err.data,
+    })
+  );
 };
 
 export default handleErrors;

@@ -7,5 +7,8 @@ interface ResponseType {
 }
 
 export const formatToJSEND = ({ status, data, message }: ResponseType) => {
+  if (!message.endsWith(".")) {
+    message += ".";
+  }
   return { message, status, data };
 };
