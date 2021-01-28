@@ -15,13 +15,18 @@ const ruleController = () => {
     res.status(STATUS_CODE.SUCCESS).json(
       formatToJSEND({
         status: RESPONSE_STATUS.SUCCESS,
-        data: me,
         message: "My Rule-Validation API",
+        data: me,
       })
     );
   };
 
-  return { base };
+  const validateRule = (req: Request, res: Response) => {
+    console.log(req.body);
+    res.send("val");
+  };
+
+  return { base, validateRule };
 };
 
 export default ruleController();
