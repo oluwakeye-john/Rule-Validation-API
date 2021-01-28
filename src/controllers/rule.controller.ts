@@ -1,18 +1,11 @@
-import { Request, response, Response } from "express";
+import { Request, Response } from "express";
 import { RESPONSE_STATUS, STATUS_CODE } from "../@types/general";
+import { ValidationPayload } from "../@types/rule";
 import { BadRequestException } from "../error";
+import { me } from "../personal-info";
 import { formatToJSEND } from "../utils/formatToJSEND";
 import { ruleRequestValidation } from "../validation/payload.validation";
-import { ValidationPayload } from "../@types/rule";
 import { validateField } from "../validation/rule.validation";
-
-const me = {
-  name: "Oluwakeye John",
-  github: "@oluwakeye-john",
-  email: "bjohnoluwakeye@gmail.com",
-  mobile: "07053643618",
-  twitter: "@oluwakeyejohn",
-};
 
 const ruleController = () => {
   const base = (req: Request, res: Response) => {
@@ -33,23 +26,17 @@ const ruleController = () => {
       throw new BadRequestException(error, null);
     }
 
-    const { valid, message } = validateField(body);
+    const { valid, message, responsePayload } = validateField(body);
 
     if (valid) {
       const response = {
         status: RESPONSE_STATUS.SUCCESS,
         message,
-        data: {
-          error: false,
-          field: body.rule.field,
-          field_value: body.data,
-          condition: body.rule.condition,
-          condition_value: body.rule.condition_value,
-        },
+        data: responsePayload,
       };
       res.status(200).json(formatToJSEND(response));
     } else {
-      throw new BadRequestException(message, null);
+      throw new BadRequestException(message, responsePayload);
     }
   };
 

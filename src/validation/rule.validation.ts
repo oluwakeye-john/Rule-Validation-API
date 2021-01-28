@@ -3,7 +3,7 @@ import { ValidationPayload } from "../@types/rule";
 
 export const validateField = (
   body: ValidationPayload
-): { valid: boolean; message: string } => {
+): { valid: boolean; message: string; responsePayload: object | null } => {
   const { rule, data } = body;
   const { field, condition, condition_value } = rule;
 
@@ -11,7 +11,11 @@ export const validateField = (
     const item = data[field];
 
     if (!item) {
-      return { valid: false, message: VALIDATION_MESSAGES.MISSING(field) };
+      return {
+        valid: false,
+        message: VALIDATION_MESSAGES.MISSING(field),
+        responsePayload: null,
+      };
     }
 
     let isConditionValid = false;
@@ -44,11 +48,22 @@ export const validateField = (
     }
 
     if (isConditionValid) {
-      return { valid: true, message: VALIDATION_MESSAGES.SUCCESS(field) };
+      return {
+        valid: true,
+        message: VALIDATION_MESSAGES.SUCCESS(field),
+        responsePayload: {
+          error: false,
+          field: body.rule.field,
+          field_value: data,
+          condition: condition,
+          condition_value: condition_value,
+        },
+      };
     } else {
       return {
         valid: false,
         message: VALIDATION_MESSAGES.FAILED_VALIDATION(field),
+        responsePayload: null,
       };
     }
   } catch (error) {
@@ -56,6 +71,7 @@ export const validateField = (
     return {
       valid: false,
       message: VALIDATION_MESSAGES.FAILED_VALIDATION(field),
+      responsePayload: null,
     };
   }
 };
