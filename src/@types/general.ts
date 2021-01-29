@@ -7,8 +7,8 @@ export enum STATUS_CODE {
 }
 
 export enum RESPONSE_STATUS {
-  SUCCESS = "SUCCESS",
-  ERROR = "ERROR",
+  SUCCESS = "success",
+  ERROR = "error",
 }
 
 export type CustomError = Error & {

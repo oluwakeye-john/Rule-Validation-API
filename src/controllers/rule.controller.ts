@@ -1,32 +1,32 @@
 import { Request, Response } from "express";
-import { RESPONSE_STATUS, STATUS_CODE } from "../@types/general";
-import { formatToJSEND } from "../utils/formatToJSEND";
-
-const me = {
-  name: "Oluwakeye John",
-  github: "@oluwakeye-john",
-  email: "bjohnoluwakeye@gmail.com",
-  mobile: "07053643618",
-  twitter: "@oluwakeyejohn",
-};
+import { VALIDATION_MESSAGES } from "../@types/messages";
+import { BadRequestException } from "../error";
+import PersonalRepo from "../repository/personalRepo";
+import { successResponse } from "../response";
+import { validateField } from "../validation/rule.validation";
 
 const ruleController = () => {
   const base = (req: Request, res: Response) => {
-    res.status(STATUS_CODE.SUCCESS).json(
-      formatToJSEND({
-        status: RESPONSE_STATUS.SUCCESS,
-        message: "My Rule-Validation API",
-        data: me,
-      })
-    );
+    const data = PersonalRepo.getUser();
+
+    successResponse({
+      res,
+      data,
+      message: VALIDATION_MESSAGES.BASE_ROUTE,
+    });
   };
 
-  const validateRule = (req: Request, res: Response) => {
-    console.log(req.body);
-    res.send("val");
+  const validateRule = (req: Request, res: Response): void => {
+    const body = req.body;
+    const { valid, message, responsePayload: data } = validateField(body);
+
+    if (!valid) {
+      throw new BadRequestException(message, data);
+    }
+
+    successResponse({ res, data, message });
   };
 
   return { base, validateRule };
 };
-
 export default ruleController();
