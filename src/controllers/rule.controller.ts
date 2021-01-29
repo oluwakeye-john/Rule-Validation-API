@@ -1,43 +1,30 @@
 import { Request, Response } from "express";
-import { RESPONSE_STATUS, STATUS_CODE } from "../@types/general";
-import { ValidationPayload } from "../@types/rule";
+import { VALIDATION_MESSAGES } from "../@types/messages";
 import { BadRequestException } from "../error";
-import { me } from "../personal-info";
-import { formatToJSEND } from "../utils/formatToJSEND";
-import { ruleRequestValidation } from "../validation/payload.validation";
+import PersonalRepo from "../repository/personalRepo";
+import { successResponse } from "../response";
 import { validateField } from "../validation/rule.validation";
 
 const ruleController = () => {
   const base = (req: Request, res: Response) => {
-    res.status(STATUS_CODE.SUCCESS).json(
-      formatToJSEND({
-        status: RESPONSE_STATUS.SUCCESS,
-        message: "My Rule-Validation API",
-        data: me,
-      })
-    );
+    const data = PersonalRepo.getUser();
+
+    successResponse({
+      res,
+      data,
+      message: VALIDATION_MESSAGES.BASE_ROUTE,
+    });
   };
 
-  const validateRule = (req: Request, res: Response) => {
-    const body: ValidationPayload = req.body;
+  const validateRule = (req: Request, res: Response): void => {
+    const body = req.body;
+    const { valid, message, responsePayload: data } = validateField(body);
 
-    const error = ruleRequestValidation(body);
-    if (error) {
-      throw new BadRequestException(error, null);
+    if (!valid) {
+      throw new BadRequestException(message, data);
     }
 
-    const { valid, message, responsePayload } = validateField(body);
-
-    if (valid) {
-      const response = {
-        status: RESPONSE_STATUS.SUCCESS,
-        message,
-        data: responsePayload,
-      };
-      res.status(200).json(formatToJSEND(response));
-    } else {
-      throw new BadRequestException(message, responsePayload);
-    }
+    successResponse({ res, data, message });
   };
 
   return { base, validateRule };
