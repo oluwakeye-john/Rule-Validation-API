@@ -5,6 +5,10 @@
   "license": "MIT",
   "devDependencies": {
     "@types/express": "^4.17.11",
+    "@types/mocha": "^8.2.0",
+    "chai": "^4.2.0",
+    "chai-http": "^4.3.0",
+    "mocha": "^8.2.1",
     "morgan": "^1.10.0",
     "nodemon": "^2.0.7",
     "ts-node": "^9.1.1",
@@ -22,6 +26,7 @@
     "tsc": "echo \"Building...\" && tsc",
     "format": "prettier --write src/**/*.*",
     "clean": "echo \"pruning build folder...\" && rm -rf build/",
+    "test": "mocha -r ts-node/register src/tests/**/*tests.ts",
     "build": "yarn clean && yarn run tsc"
   }
 }

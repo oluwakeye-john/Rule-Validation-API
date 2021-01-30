@@ -30,3 +30,6 @@ app.use(handleErrors);
 app.listen(PORT, () => {
   rootLogger.log(`Server listening on ${PORT}`);
 });
+
+// for testing
+export default app;

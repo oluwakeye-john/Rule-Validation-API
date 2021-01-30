@@ -15,7 +15,6 @@ export const successResponse = ({
   statusCode = STATUS_CODE.SUCCESS,
   message,
 }: SuccessResponseType) => {
-  res
-    .status(statusCode)
-    .json(formatToJSEND({ data, status: RESPONSE_STATUS.SUCCESS, message }));
+  res.status(statusCode);
+  res.json(formatToJSEND({ data, status: RESPONSE_STATUS.SUCCESS, message }));
 };

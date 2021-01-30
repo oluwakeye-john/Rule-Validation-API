@@ -1,7 +1,9 @@
 import { NextFunction, Request, Response } from "express";
-import { CustomError, RESPONSE_STATUS } from "../@types/general";
-import Logger from "../logger";
+import { CustomError, RESPONSE_STATUS, STATUS_CODE } from "../@types/general";
+import { VALIDATION_MESSAGES } from "../@types/messages";
 import { formatToJSEND } from "../utils/formatToJSEND";
+
+// middleware that handles all errors.
 
 const handleErrors = (
   err: CustomError,
@@ -10,11 +12,13 @@ const handleErrors = (
   next: NextFunction
 ) => {
   const code = err?.code;
-  return res.status(code).json(
+
+  res.status(code || STATUS_CODE.INTERNAL_SERVER_ERROR);
+  return res.json(
     formatToJSEND({
       status: RESPONSE_STATUS.ERROR,
-      message: err.message,
-      data: err.data,
+      message: err.message || VALIDATION_MESSAGES.BASE_ERROR,
+      data: err.data || null,
     })
   );
 };
