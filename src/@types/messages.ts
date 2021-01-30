@@ -4,4 +4,6 @@ export const VALIDATION_MESSAGES = {
   MISSING: (field: string) => `field ${field} is missing from data.`,
 
   BASE_ROUTE: `My Rule-Validation API`,
+
+  BASE_ERROR: `An error occurred`,
 };

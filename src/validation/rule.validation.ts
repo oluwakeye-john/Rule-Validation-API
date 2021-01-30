@@ -1,5 +1,8 @@
 import { VALIDATION_MESSAGES } from "../@types/messages";
 import { ValidationPayload } from "../@types/rule";
+import Logger from "../logger";
+
+const logger = new Logger("rule-validation");
 
 export const validateField = (
   body: ValidationPayload
@@ -8,7 +11,13 @@ export const validateField = (
   const { field, condition, condition_value } = rule;
 
   try {
-    const item = data[field];
+    let item = data[field];
+
+    if (typeof data === "object" && field.includes(".")) {
+      // for nested objects
+      const [first, second] = field.split(".");
+      item = data[first][second];
+    }
 
     if (!item) {
       return {
@@ -67,7 +76,7 @@ export const validateField = (
       };
     }
   } catch (error) {
-    console.log(error);
+    logger.log(error);
     return {
       valid: false,
       message: VALIDATION_MESSAGES.FAILED_VALIDATION(field),

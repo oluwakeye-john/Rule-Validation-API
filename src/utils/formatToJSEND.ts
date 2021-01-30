@@ -7,6 +7,7 @@ interface ResponseType {
 }
 
 const checkPunctuation = (val: string): string => {
+  // checks if punctuation is missing and adds it
   if (!val.endsWith(".")) {
     val += ".";
   }

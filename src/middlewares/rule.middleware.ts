@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { ValidationPayload } from "../@types/rule";
 import { BadRequestException } from "../error";
-import { ruleRequestValidation } from "../validation/payload.validation";
+import { ruleRequestValidation } from "../validation/input.validation";
 
 export const ruleMiddleware = (
   req: Request,
