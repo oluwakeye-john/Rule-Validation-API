@@ -17,6 +17,11 @@
     "joi": "^17.3.0"
   },
   "scripts": {
-    "dev": "nodemon"
+    "start": "node ./build/index.js",
+    "dev": "nodemon",
+    "tsc": "echo \"Building...\" && tsc",
+    "format": "prettier --write src/**/*.*",
+    "clean": "echo \"pruning build folder...\" && rm -rf build/",
+    "build": "yarn clean && yarn run tsc"
   }
 }
